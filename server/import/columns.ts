@@ -91,8 +91,17 @@ export const VENUE_ALIASES: Record<string, string> = {
    * both pin the building — the locative strip reduces the second one once this is known.
    */
   dhwani: 'abc_auditorium_complex',
-  aryabatta: 'aryabhatta_park',
-  aryabhatta: 'aryabhatta_park',
+  /*
+   * ABC is Aryabhatta, Bhaskara and Chanakya: the three halls are inside the ABC Auditorium
+   * Complex, so the hall names and the complex are one building. OSM puts "Aryabhatta Park"
+   * on the lawn 47 m north of it, which is not a place at NITC at all - it is dropped from
+   * the map data now (scripts/place-supplement.json), and these spellings, including that
+   * one, all land on the building people actually walk into.
+   */
+  aryabatta: 'abc_auditorium_complex',
+  aryabhatta: 'abc_auditorium_complex',
+  'aryabhatta park': 'abc_auditorium_complex',
+  'aryabatta park': 'abc_auditorium_complex',
   'football ground': 'nit_football_ground',
   'volleyball court': 'volleyball_court',
   'basketball court': 'basketball_court',
@@ -112,19 +121,19 @@ export const AMBIGUOUS_VENUES: readonly string[] = ['ground', 'court', 'lab', 'b
  * that tells someone where to go once they are in the building.
  *
  * Confirmed by the user: SSL and NSL are in the IT Lab Complex, BDL is in the CCC, and
- * Aryabhatta, Bhaskara and Chanakya are three halls inside one building — the one OSM
- * named "Aryabhatta Park". The user's own words: people "just enter the building" and find
- * the hall, so the hall is a room, and `aryabatta` on its own routes to the building with no
- * room because the building is where you would walk to anyway.
+ * Aryabhatta, Bhaskara and Chanakya are three halls inside the ABC Auditorium Complex, which
+ * is what those three initials are. The user's own words: people "just enter the building"
+ * and find the hall, so the hall is a room, and `aryabatta` on its own routes to the building
+ * with no room because the building is where you would walk to anyway.
  */
 export const VENUE_ROOMS: Record<string, { placeId: string; room: string | null }> = {
   ssl: { placeId: 'it_lab_complex', room: 'SSL' },
   nsl: { placeId: 'it_lab_complex', room: 'NSL' },
   bdl: { placeId: 'central_computer_center', room: 'BDL' },
-  'aryabhatta hall': { placeId: 'aryabhatta_park', room: 'Aryabhatta Hall' },
-  'aryabatta hall': { placeId: 'aryabhatta_park', room: 'Aryabhatta Hall' },
-  'bhaskara hall': { placeId: 'aryabhatta_park', room: 'Bhaskara Hall' },
-  'chanakya hall': { placeId: 'aryabhatta_park', room: 'Chanakya Hall' },
+  'aryabhatta hall': { placeId: 'abc_auditorium_complex', room: 'Aryabhatta Hall' },
+  'aryabatta hall': { placeId: 'abc_auditorium_complex', room: 'Aryabhatta Hall' },
+  'bhaskara hall': { placeId: 'abc_auditorium_complex', room: 'Bhaskara Hall' },
+  'chanakya hall': { placeId: 'abc_auditorium_complex', room: 'Chanakya Hall' },
 
   // Venues naming more than one place, which the conjunction guard refuses by default
   // because guessing between them is how someone ends up in the wrong building. Each of

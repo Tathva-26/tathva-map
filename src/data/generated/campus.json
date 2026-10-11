@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-08",
+ "generatedAt": "2026-10-11",
  "attribution": "(c) OpenStreetMap contributors",
  "source": "https://www.openstreetmap.org/copyright",
  "art": "real_map.jpeg",
@@ -353,35 +353,6 @@
    "outline": null,
    "nodeId": "n539412583",
    "driveNodeId": "n539412583"
-  },
-  {
-   "id": "aryabhatta_park",
-   "name": "Aryabhatta Park",
-   "category": "event",
-   "at": [
-    1009.41,
-    1017.05
-   ],
-   "outline": [
-    [
-     1004.57,
-     972.29
-    ],
-    [
-     1054.38,
-     1018.82
-    ],
-    [
-     1014.25,
-     1061.81
-    ],
-    [
-     964.44,
-     1015.3
-    ]
-   ],
-   "nodeId": "n12088311927",
-   "driveNodeId": "n12088311927"
   },
   {
    "id": "atm_circle",

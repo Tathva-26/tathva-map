@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { currentPlaceId } from '../../shared/places.ts'
 import type { ScheduleEvent } from '../../shared/schedule.ts'
 import { fetchSchedule } from './api.ts'
 import { loadCachedSchedule, saveCachedSchedule, type CachedSchedule } from './cache.ts'
@@ -58,9 +59,19 @@ export function useSchedule(): { events: ScheduleEvent[]; fetchedAt: number | nu
     }
   }, [refresh])
 
+  // A retired place is translated here as well as in the service, because this copy may not
+  // have come from the service: it can be the snapshot committed into the build, or the one
+  // in this browser's storage from a previous fest day. Neither can be fixed by a migration.
+  const events = useMemo(() => {
+    const raw = cached?.data.events ?? NO_EVENTS
+    return raw.some((e) => currentPlaceId(e.placeId) !== e.placeId)
+      ? raw.map((e) => ({ ...e, placeId: currentPlaceId(e.placeId) }))
+      : raw
+  }, [cached])
+
   const fetchedAt = cached?.fetchedAt ?? null
   return {
-    events: cached?.data.events ?? NO_EVENTS,
+    events,
     fetchedAt,
     stale: fetchedAt === null || now.getTime() - fetchedAt > STALE_MS,
   }

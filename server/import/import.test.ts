@@ -276,14 +276,18 @@ test('re-importing still corrects an event nothing has touched', () => {
   db.close()
 })
 
-test('the three halls are rooms in one building, which has no name of its own', () => {
-  // OSM called the building "Aryabhatta Park"; it is a lecture-hall block holding Aryabhatta,
-  // Bhaskara and Chanakya halls, and people enter the building and find the hall inside.
-  expect(match('Aryabhatta Hall')).toEqual({ placeId: 'aryabhatta_park', room: 'Aryabhatta Hall' })
-  expect(match('Bhaskara Hall')).toEqual({ placeId: 'aryabhatta_park', room: 'Bhaskara Hall' })
-  expect(match('Chanakya Hall')).toEqual({ placeId: 'aryabhatta_park', room: 'Chanakya Hall' })
+test('the three halls are rooms in the ABC Auditorium Complex', () => {
+  // ABC is Aryabhatta, Bhaskara and Chanakya: one building holding all three halls, which
+  // people enter and then find the hall inside. OSM's "Aryabhatta Park" is the lawn north of
+  // it and is not a place here at all, so no venue text may resolve to it.
+  expect(match('Aryabhatta Hall')).toEqual({ placeId: 'abc_auditorium_complex', room: 'Aryabhatta Hall' })
+  expect(match('Bhaskara Hall')).toEqual({ placeId: 'abc_auditorium_complex', room: 'Bhaskara Hall' })
+  expect(match('Chanakya Hall')).toEqual({ placeId: 'abc_auditorium_complex', room: 'Chanakya Hall' })
   // Which hall is unknown here, and all three share one entrance.
-  expect(match('Aryabatta')).toEqual({ placeId: 'aryabhatta_park', room: null })
+  expect(match('Aryabatta')).toEqual({ placeId: 'abc_auditorium_complex', room: null })
+  // The old sheet spelling still lands on the building rather than failing the row.
+  expect(match('Aryabhatta Park')).toEqual({ placeId: 'abc_auditorium_complex', room: null })
+  expect(knownPlaces.has('aryabhatta_park')).toBe(false)
 })
 
 test('labs resolve to their building with the lab as the room', () => {
@@ -349,7 +353,7 @@ test('reads the real sheet shape: title row, section headings, one Time column',
   expect(ok[0].input.endAt).toBe('2026-10-09T11:30:00.000Z')
 
   // The hall resolves to its building, with the hall as the room.
-  expect(ok[1].input.placeId).toBe('aryabhatta_park')
+  expect(ok[1].input.placeId).toBe('abc_auditorium_complex')
   expect(ok[1].input.room).toBe('Aryabhatta Hall')
 
   // The untimed row is reported for /admin rather than guessed at.

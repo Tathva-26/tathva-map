@@ -582,7 +582,6 @@
     "mini gym": "Mini Gym",
     "mini park": "Mini Park",
     "maitri": "Maitri",
-    "aryabhatta park": "Aryabhatta Park",
     "97th Avenue Student Plaza": "97th Avenue",
     "S.M LAB": "S.M Lab",
     "T.E LAB": "T.E Lab",
@@ -591,6 +590,16 @@
     "East Campus Lecture Hall Complex (ECLHC)": "ECLHC",
     "Center for Career Development": "Centre for Career Development",
     "NIT ground": "Volleyball Court"
+  },
+  "drops": {
+    "_comment": [
+      "OpenStreetMap features that are not places anyone here would be sent to, keyed by the",
+      "OSM name with the reason. They are dropped before ids are handed out, so they never",
+      "appear on the map, in search, or as a venue the schedule importer can resolve to.",
+      "A drop that matches nothing is a build warning: upstream renamed it, and the feature is",
+      "back under another name."
+    ],
+    "aryabhatta park": "Not a place at NITC. The user says the only thing here is the ABC Auditorium Complex, whose three halls are Aryabhatta, Bhaskara and Chanakya - which is what ABC stands for, and where the lecture-series events actually happen. OSM has this name on the lawn just north of that building, 47 m away, so every hall event resolved onto grass. The halls now route to abc_auditorium_complex (server/import/columns.ts)."
   },
   "aliases": {
     "_comment": [

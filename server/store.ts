@@ -2,6 +2,7 @@ import type Database from 'better-sqlite3'
 import { nanoid } from 'nanoid'
 import { applyDelay, applyEdit } from '../shared/rules.ts'
 import { istDateKey } from '../shared/ist.ts'
+import { currentPlaceId } from '../shared/places.ts'
 import type { EventFields, EventInput, EventPatch, ScheduleEvent } from '../shared/schedule.ts'
 
 export class NotFoundError extends Error {
@@ -80,7 +81,9 @@ function rowToEvent(r: EventRow): ScheduleEvent {
     title: r.title,
     description: r.description,
     category: r.category,
-    placeId: r.place_id,
+    // Translated on the way out, not migrated: see MOVED_PLACES. An edit to such an event
+    // writes the current id back, so a row heals the first time anyone touches it.
+    placeId: currentPlaceId(r.place_id),
     room: r.room,
     startAt: r.start_at,
     endAt: r.end_at,

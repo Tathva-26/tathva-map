@@ -466,6 +466,16 @@ function buildPlaces(elements, graph) {
     byName.set(extra.name.toLowerCase(), extra)
   }
 
+  // Features OSM names that are not places to send anyone to. Dropped here, before ids are
+  // handed out, so the name disappears from the map, from search and from the set the
+  // schedule importer can resolve a venue to - a name left in any one of those is a name an
+  // event can still land on. A drop that matches nothing is a warning for the same reason an
+  // unused id override is: upstream renamed it, and the feature is back under another name.
+  for (const key of Object.keys(supplement.drops ?? {})) {
+    if (key === '_comment') continue
+    if (!byName.delete(key)) console.warn(`  drops: "${key}" matched no place`)
+  }
+
   // The art's labels are what people on campus actually say; prefer them for display. The
   // id keeps following the ORIGINAL name, because ids are printed on QR codes around campus
   // - a nicer label must never silently invalidate a poster.
