@@ -46,22 +46,34 @@ test('a stage keeps its own popup; a room still borrows its building\'s', () => 
   expect(hostPlaceId('informals_stage')).toBe('atm_circle')
 })
 
-test("a stage's acts land on the stage, not on the junction it stands on", () => {
+test("a stage's acts land on the stage and on the place it is held on", () => {
+  // Reported from the fest: tapping the football ground while the proshow was on it answered
+  // "Nothing listed right now", because the acts were filed under the stage's own pin alone.
+  // Someone standing on the ground taps the ground, so the ground has to answer.
   const act = ev('Flashmob', 'informals_stage', '2026-02-06T09:00:00.000Z', '2026-02-06T11:00:00.000Z')
   const { byPlace, liveVenueIds } = indexByVenue([act], now)
   expect(byPlace.get('informals_stage')).toEqual([act])
-  expect(byPlace.has('atm_circle')).toBe(false)
-  // Both light up: the pin that names it and the place it is held on.
+  expect(byPlace.get('atm_circle')).toEqual([act])
+  // Both light up too: the pin that names it and the place it is held on.
   expect(liveVenueIds.has('informals_stage')).toBe(true)
   expect(liveVenueIds.has('atm_circle')).toBe(true)
 })
 
-test("the host's own events stay on the host", () => {
+test("the host lists its own events as well as the stage's", () => {
   const act = ev('Flashmob', 'informals_stage', '2026-02-06T09:00:00.000Z', '2026-02-06T11:00:00.000Z')
   const stall = ev('Rageroom', 'atm_circle', '2026-02-06T09:00:00.000Z', '2026-02-06T11:00:00.000Z')
   const { byPlace } = indexByVenue([act, stall], now)
   expect(byPlace.get('informals_stage')).toEqual([act])
-  expect(byPlace.get('atm_circle')).toEqual([stall])
+  expect(byPlace.get('atm_circle')).toEqual([act, stall])
+})
+
+test('a room is still listed once, on its building', () => {
+  // The rule that changed is about stages. A room has no pin of its own, so its host *is* its
+  // marker and the deduplication has to keep it to a single listing.
+  const room = ev('Workshop', 'elhc_301', '2026-02-06T09:00:00.000Z', '2026-02-06T11:00:00.000Z')
+  const { byPlace } = indexByVenue([room], now)
+  expect(byPlace.get('elhc')).toEqual([room])
+  expect(byPlace.has('elhc_301')).toBe(false)
 })
 
 test('an upcoming act marks both ids as event venues, so neither pin goes grey', () => {

@@ -9,9 +9,12 @@ import { flagshipVenueOf } from './flagship'
  * `byPlace` is keyed by the marker whose popup should list them, so an indoor room's events show
  * on its building and a stage's acts show on the stage rather than on whatever it stands on.
  *
- * An event can land in **two** buckets. Robowars is stored at the Open Air Theatre, and belongs
- * both on the theatre's pin — which is what it is — and on the pin named Robowars, which is what
- * people are looking for. Listing it twice is the honest answer; leaving either one empty is not.
+ * An event can land in **more than one** bucket, and that is the honest answer rather than a
+ * bug. Robowars is stored at the Open Air Theatre and belongs both on the theatre's pin — which
+ * is what it is — and on the pin named Robowars, which is what people are looking for. The
+ * Proshow belongs on its own pin and on the football ground it is held on: someone standing on
+ * that ground taps the ground, and a popup that answers "Nothing listed right now" while the
+ * night's acts are on it is wrong in the one place it most needs to be right.
  *
  * The highlight sets are keyed by every id involved, because they colour shapes as well as pins:
  * the proshow should light its own pin and the football ground it is held on.
@@ -22,14 +25,13 @@ export function indexByVenue(events: ScheduleEvent[], now: Date) {
   const eventVenueIds = new Set<string>()
   for (const e of events) {
     const ids = [markerPlaceId(e.placeId), hostPlaceId(e.placeId), flagshipVenueOf(e)]
+    // Every id gets the bucket, deduplicated: a room's host *is* its marker, so a room's
+    // events are listed once on the building, while a stage's host is a separate shape and
+    // gets the acts as well as the highlight.
     for (const id of new Set(ids.filter((id): id is string => id !== null))) {
-      // The host only gets a bucket when it is the marker too; otherwise its pin would list a
-      // room's events twice over. It always gets the highlight, because its shape is drawn.
-      if (id === markerPlaceId(e.placeId) || id === flagshipVenueOf(e)) {
-        const list = byPlace.get(id)
-        if (list) list.push(e)
-        else byPlace.set(id, [e])
-      }
+      const list = byPlace.get(id)
+      if (list) list.push(e)
+      else byPlace.set(id, [e])
       const state = eventState(e, now)
       if (state === 'live') {
         liveVenueIds.add(id)
